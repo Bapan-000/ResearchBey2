@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Profile Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home,arrow_back,arrow_forward,check_circle,hotel,restaurant,checkroom,shopping_bag" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0d47a1',
+                        'primary-container': '#d8e2ff',
+                        secondary: '#4b607c',
+                        surface: '#f8f9fc',
+                        'surface-container-lowest': '#ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fc; scroll-behavior: smooth;}
+        
+        .question-block { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            margin-bottom: 80px;
+        }
+        
+        .question-block.unlocked { 
+            display: block; 
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes slideUpFade { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* Dual slider custom CSS */
+        .slider-track { position: relative; width: 100%; height: 8px; background-color: #e2e8f0; border-radius: 4px; margin-top: 40px; margin-bottom: 20px;}
+        .slider-fill { position: absolute; height: 100%; background: linear-gradient(to right, #003178, #0d47a1); border-radius: 4px; }
+        .slider-thumb { position: absolute; top: 50%; width: 24px; height: 24px; background: white; border: 2px solid #0d47a1; border-radius: 50%; transform: translate(-50%, -50%); cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .slider-thumb:active { cursor: grabbing; scale: 1.1; }
+        .slider-value-box { position: absolute; top: -35px; transform: translateX(-50%); background: #1e293b; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; white-space: nowrap;}
+        
+        /* Interactive Cards */
+        .selectable-card { border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease; }
+        .selectable-card.selected { border-color: #0d47a1; background-color: #f0f4ff; box-shadow: 0 4px 12px rgba(13, 71, 161, 0.1); }
+        .selectable-card.selected .check-icon { opacity: 1; }
+        .check-icon { opacity: 0; transition: opacity 0.2s ease; }
+
+        .niche-pill { cursor: pointer; transition: all 0.2s ease; }
+        .niche-pill.selected { background-image: linear-gradient(to right, #003178, #0d47a1); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(13, 71, 161, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased pb-32 pt-10">
+
+    <!-- Decorative background -->
+    <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none" style="z-index: -1;"></div>
+    
+    <header class="px-6 md:px-10 max-w-3xl mx-auto mb-16 text-center">
+        <div class="w-16 h-16 bg-white border border-slate-100 rounded-2xl shadow-sm text-primary flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-3xl">store</span>
+        </div>
+        <h1 class="font-headline text-4xl font-extrabold text-slate-900 mb-3">Partner with Us</h1>
+        <p class="text-slate-500 text-lg">Build your business profile in just a few steps.</p>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 md:px-10">
+        
+        <!-- Step 1: Business Name -->
+        <section id="step-1" class="question-block unlocked" data-step="1">
+            <h2 class="font-headline text-3xl font-bold mb-3">1. What is your business name? <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">Enter the official name of your establishment.</p>
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                <input type="text" id="input-business-name" class="w-full px-4 py-4 rounded-xl border-slate-200 focus:border-primary focus:ring-primary shadow-sm text-lg" placeholder="e.g. Starlight Global Logistics">
+                <button id="btn-next-1" class="mt-4 bg-primary text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-800 transition-colors">Continue</button>
+            </div>
+        </section>
+
+        <!-- Step 2: Audience -->
+        <section id="step-2" class="question-block" data-step="2">
+            <h2 class="font-headline text-3xl font-bold mb-3">2. Who is your audience? <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">Tell us where your primary customers are located.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="selectable-card group bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center gap-4 hover:shadow-md" data-value="Online Audience (All over India)" data-group="audience">
+                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+                        <span class="material-symbols-outlined text-3xl">public</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Online Audience</h3>
+                        <p class="text-sm text-slate-500">All over India</p>
+                    </div>
+                    <span class="material-symbols-outlined text-primary check-icon absolute top-4 right-4">check_circle</span>
+                </div>
+                <div class="selectable-card group bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center gap-4 hover:shadow-md" data-value="Offline Audience (In locality)" data-group="audience">
+                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+                        <span class="material-symbols-outlined text-3xl">store</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">Offline Audience</h3>
+                        <p class="text-sm text-slate-500">In your locality</p>
+                    </div>
+                    <span class="material-symbols-outlined text-primary check-icon absolute top-4 right-4">check_circle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Domain Selection -->
+        <section id="step-3" class="question-block" data-step="3">
+            <h2 class="font-headline text-3xl font-bold mb-3">3. Select your domain <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">What category best describes your business?</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4" data-value="Clothing" data-group="domain">
+                    <span class="material-symbols-outlined text-primary bg-blue-50 p-3 rounded-lg">checkroom</span>
+                    <span class="font-semibold">Clothing</span>
+                    <span class="material-symbols-outlined text-primary check-icon ml-auto">check_circle</span>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4" data-value="Hotel" data-group="domain">
+                    <span class="material-symbols-outlined text-primary bg-blue-50 p-3 rounded-lg">hotel</span>
+                    <span class="font-semibold">Hotel</span>
+                    <span class="material-symbols-outlined text-primary check-icon ml-auto">check_circle</span>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4" data-value="Restaurant" data-group="domain">
+                    <span class="material-symbols-outlined text-primary bg-blue-50 p-3 rounded-lg">restaurant</span>
+                    <span class="font-semibold">Restaurant</span>
+                    <span class="material-symbols-outlined text-primary check-icon ml-auto">check_circle</span>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4" data-value="Footwear" data-group="domain">
+                    <span class="material-symbols-outlined text-primary bg-blue-50 p-3 rounded-lg">shopping_bag</span>
+                    <span class="font-semibold">Footwear</span>
+                    <span class="material-symbols-outlined text-primary check-icon ml-auto">check_circle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Niche -->
+        <section id="step-4" class="question-block" data-step="4">
+            <h2 class="font-headline text-3xl font-bold mb-3">4. What is your exact niche? <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">Select your focus area in <span id="display-domain" class="font-bold text-slate-800">your domain</span>.</p>
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                <div id="niche-container" class="flex flex-wrap gap-4">
+                    <!-- Dynamic niches will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 5: Locality -->
+        <section id="step-5" class="question-block" data-step="5">
+            <h2 class="font-headline text-3xl font-bold mb-3">5. Where are you located? <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">Enter the locality or city where you want to operate.</p>
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                <input type="text" id="input-locality" class="w-full px-4 py-4 rounded-xl border-slate-200 focus:border-primary focus:ring-primary shadow-sm text-lg" placeholder="e.g. Bandra, Mumbai">
+                <button id="btn-next-5" class="mt-4 bg-primary text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-800 transition-colors">Continue</button>
+            </div>
+        </section>
+
+        <!-- Step 6: Price Range -->
+        <section id="step-6" class="question-block" data-step="6">
+            <h2 class="font-headline text-3xl font-bold mb-3">6. Set your price range <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-4">Set the minimum and maximum price expectations for your offerings.</p>
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 pt-16">
+                <div class="slider-track" id="slider-track">
+                    <div class="slider-fill" id="slider-fill"></div>
+                    <div class="slider-thumb" id="thumb-min" data-type="min">
+                        <div class="slider-value-box" id="value-min">Rs 0</div>
+                    </div>
+                    <div class="slider-thumb" id="thumb-max" data-type="max">
+                        <div class="slider-value-box" id="value-max">Rs 50,000</div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-8 text-sm font-medium text-slate-500">
+                    <span>Rs 0</span>
+                    <span>Rs 50,000</span>
+                </div>
+                <button id="btn-next-6" class="w-full mt-8 bg-primary/10 text-primary font-bold px-6 py-3 rounded-xl hover:bg-primary/20 transition-colors">Confirm Pricing</button>
+            </div>
+        </section>
+
+        <!-- Step 7: Quality -->
+        <section id="step-7" class="question-block" data-step="7">
+            <h2 class="font-headline text-3xl font-bold mb-3">7. Product/Service Quality <span class="text-red-500">*</span></h2>
+            <p class="text-slate-500 mb-6">Select the market positioning of your offerings.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100" data-value="Budget Friendly" data-group="quality">
+                    <h3 class="font-bold text-lg">Budget Friendly</h3>
+                    <p class="text-sm text-slate-500 mt-1">Focus on affordability and volume.</p>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100" data-value="Mid Range" data-group="quality">
+                    <h3 class="font-bold text-lg">Mid Range</h3>
+                    <p class="text-sm text-slate-500 mt-1">Balanced quality and price.</p>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100" data-value="Premium" data-group="quality">
+                    <h3 class="font-bold text-lg">Premium</h3>
+                    <p class="text-sm text-slate-500 mt-1">High quality, higher price bracket.</p>
+                </div>
+                <div class="selectable-card bg-white rounded-xl p-5 shadow-sm border border-slate-100" data-value="Luxury" data-group="quality">
+                    <h3 class="font-bold text-lg">Luxury</h3>
+                    <p class="text-sm text-slate-500 mt-1">Exclusive, top-tier offerings.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 8: Submission Block -->
+        <section id="step-8" class="question-block" data-step="8">
+            <div class="bg-gradient-to-br from-primary to-blue-800 text-white rounded-3xl p-10 text-center shadow-xl">
+                <h2 class="font-headline text-3xl font-bold mb-4">You're all set!</h2>
+                <p class="text-primary-container mb-8 max-w-sm mx-auto">Review your answers above. When you are ready, submit your profile to continue.</p>
+                <button id="btn-submit" class="w-full sm:w-auto bg-white text-primary font-bold px-10 py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all">Submit Application</button>
+            </div>
+        </section>
+
+        <!-- Success overlay completely replaces UI if successful -->
+        <div id="success-screen" class="hidden fixed inset-0 bg-white z-50 flex-col items-center justify-center text-center p-6">
+            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-[bounce_1s_ease-in-out]">
+                <span class="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
+            </div>
+            <h2 class="font-headline text-4xl font-extrabold mb-4 text-slate-900">Data Collected Successfully!</h2>
+            <p class="text-slate-600 text-xl mb-10 max-w-md mx-auto">All details you’ve filled have been securely saved to our system. Your result will be active shortly.</p>
+            <button onclick="window.location.reload()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity">Start New Profile</button>
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
